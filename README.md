@@ -199,6 +199,7 @@ A small penalty is subtracted for the number of steps to reach every goal.
 
 Registered configurations:
 - `MiniGrid-BoxPushing-8x8-v0`
+- `MiniGrid-BoxPushing-12x12-v0`
 - `MiniGrid-BoxPushing-16x16-v0`
 
 ### Empty environment

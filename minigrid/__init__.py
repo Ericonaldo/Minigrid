@@ -187,10 +187,16 @@ def register_minigrid_envs():
 
     # Box
     # ----------------------------------------
-
     register(
         id="MiniGrid-BoxPushing-8x8-v0",
         entry_point="minigrid.envs:BoxPushingEnv",
+        kwargs={"size": 8},
+    )
+
+    register(
+        id="MiniGrid-BoxPushing-12x12-v0",
+        entry_point="minigrid.envs:BoxPushingEnv",
+        kwargs={"size": 12},
     )
 
     register(

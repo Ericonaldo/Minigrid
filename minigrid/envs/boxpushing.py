@@ -5,7 +5,7 @@ from minigrid.core.mission import MissionSpace
 from minigrid.core.world_object import Goal, Box, ColoredGoal
 from minigrid.minigrid_env import MiniGridEnv
 
-import numpy.random as random
+import numpy as np
 
 class BoxPushingEnv(MiniGridEnv):
     """
@@ -52,7 +52,7 @@ class BoxPushingEnv(MiniGridEnv):
 
     ### Registered Configurations
 
-    - `MiniGrid-BoxPushing-8x8-v0`
+    - `MiniGrid-BoxPushing-12x12-v0`
     - `MiniGrid-BoxPushing-16x16-v0`
 
     """
@@ -66,7 +66,7 @@ class BoxPushingEnv(MiniGridEnv):
         required_boxes_num=4, 
         **kwargs
     ):
-        self.agent_start_pos = agent_start_pos
+        self.agent_start_pos = agent_start_pos # Not used
         self.agent_start_dir = agent_start_dir
 
         self.required_boxes_num = required_boxes_num
@@ -90,7 +90,21 @@ class BoxPushingEnv(MiniGridEnv):
 
         from gymnasium import spaces
         # Only use 3 actions
-        self.action_space = spaces.Discrete(3) 
+        self.action_space = spaces.Discrete(3)
+        image_observation_space = spaces.Box(
+            low=0,
+            high=255,
+            shape=(self.height, self.width, 3),
+            dtype="uint8",
+        )
+        self.observation_space = spaces.Dict(
+            {
+                "image": image_observation_space,
+                "direction": spaces.Discrete(4),
+                "mission": mission_space,
+            }
+        )
+        print(self.observation_space)
 
     @staticmethod
     def _gen_mission():
@@ -105,25 +119,43 @@ class BoxPushingEnv(MiniGridEnv):
 
         # Place a goal square in four corners
         self.put_obj(ColoredGoal("yellow"), width - 2, height - 2)
-        self.put_obj(ColoredGoal("grey"), 1, 1)
+        self.put_obj(ColoredGoal("green"), 1, 1)
         self.put_obj(ColoredGoal("blue"), width - 2, 1)
         self.put_obj(ColoredGoal("red"), 1, height - 2)
 
-        box_pos = (random.randint(3, width - 4, [4]), random.randint(3, height - 4, [4]))
+        box_pos_idx = np.random.choice((width - 4)*(height - 4), 4, replace=False)
+        box_pos = []
+        for i in range(4):
+            box_pos.append([box_pos_idx[i] // (width - 4) + 2, box_pos_idx[i] % (width - 4) + 2])
 
-        self.put_obj(Box("yellow"), box_pos[0][0], box_pos[1][0])
-        self.put_obj(Box("grey"), box_pos[0][1], box_pos[1][1])
-        self.put_obj(Box("blue"), box_pos[0][2], box_pos[1][2])
-        self.put_obj(Box("red"), box_pos[0][3], box_pos[1][3])
+        self.put_obj(Box("yellow"), box_pos[0][0], box_pos[0][1])
+        self.put_obj(Box("green"), box_pos[1][0], box_pos[1][1])
+        self.put_obj(Box("blue"), box_pos[2][0], box_pos[2][1])
+        self.put_obj(Box("red"), box_pos[3][0], box_pos[3][1])
 
         # Place the agent
-        if self.agent_start_pos is not None:
-            self.agent_pos = self.agent_start_pos
-            self.agent_dir = self.agent_start_dir
-        else:
-            self.place_agent()
+        self.place_agent()
 
         self.mission = "push the box(es) to every goal square" 
+
+    def gen_obs(self):
+        """
+        Generate the agent's view (fully observable, low-resolution encoding)
+        """
+         
+        # Get the fully observable states
+        grid = self.grid
+
+        # Encode the fully observable view into a numpy array
+        image = grid.encode(None)
+
+        # Observations are dictionaries containing:
+        # - an image (partially observable view of the environment)
+        # - the agent's direction/orientation (acting as a compass)
+        # - a textual mission string (instructions for the agent)
+        obs = {"image": image, "direction": self.agent_dir, "mission": self.mission}
+
+        return obs
 
     def reset(self, *args, **kwargs):
         self.success_boxes_num = 0
