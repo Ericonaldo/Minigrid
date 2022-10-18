@@ -88,6 +88,10 @@ class BoxPushingEnv(MiniGridEnv):
             **kwargs
         )
 
+        from gymnasium import spaces
+        # Only use 3 actions
+        self.action_space = spaces.Discrete(3) 
+
     @staticmethod
     def _gen_mission():
         return "pushing the box(es) into goals"
@@ -133,7 +137,7 @@ class BoxPushingEnv(MiniGridEnv):
         Compute the reward to be given upon success
         """
 
-        return 1 - 0.9 * (self.every_box_step_count / self.max_steps)
+        return max(0, 1 - 0.9 * (self.every_box_step_count / self.max_steps))
 
     def step(self, action):
         self.step_count += 1
