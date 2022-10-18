@@ -4,6 +4,7 @@ from minigrid.envs.distshift import DistShiftEnv
 from minigrid.envs.doorkey import DoorKeyEnv
 from minigrid.envs.dynamicobstacles import DynamicObstaclesEnv
 from minigrid.envs.empty import EmptyEnv
+from minigrid.envs.boxpushing import BoxPushingEnv
 from minigrid.envs.fetch import FetchEnv
 from minigrid.envs.fourrooms import FourRoomsEnv
 from minigrid.envs.gotodoor import GoToDoorEnv

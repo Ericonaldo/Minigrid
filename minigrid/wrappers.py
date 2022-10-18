@@ -162,10 +162,11 @@ class RGBImgObsWrapper(ObservationWrapper):
     This can be used to have the agent to solve the gridworld in pixel space.
     """
 
-    def __init__(self, env, tile_size=8):
+    def __init__(self, env, tile_size=8, highlight=True):
         super().__init__(env)
 
         self.tile_size = tile_size
+        self.highlight = highlight
 
         new_image_space = spaces.Box(
             low=0,
@@ -179,7 +180,7 @@ class RGBImgObsWrapper(ObservationWrapper):
         )
 
     def observation(self, obs):
-        rgb_img = self.get_frame(highlight=True, tile_size=self.tile_size)
+        rgb_img = self.get_frame(highlight=self.highlight, tile_size=self.tile_size)
 
         return {**obs, "image": rgb_img}
 

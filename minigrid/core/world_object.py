@@ -107,6 +107,15 @@ class Goal(WorldObj):
     def render(self, img):
         fill_coords(img, point_in_rect(0, 1, 0, 1), COLORS[self.color])
 
+class ColoredGoal(WorldObj):
+    def __init__(self, color="green"):
+        super().__init__("goal", color)
+
+    def can_overlap(self):
+        return True
+
+    def render(self, img):
+        fill_coords(img, point_in_rect(0, 1, 0, 1), COLORS[self.color])
 
 class Floor(WorldObj):
     """
@@ -123,7 +132,6 @@ class Floor(WorldObj):
         # Give the floor a pale color
         color = COLORS[self.color] / 2
         fill_coords(img, point_in_rect(0.031, 1, 0.031, 1), color)
-
 
 class Lava(WorldObj):
     def __init__(self):
