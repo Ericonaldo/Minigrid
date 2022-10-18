@@ -205,6 +205,24 @@ def register_minigrid_envs():
         kwargs={"size": 16},
     )
 
+    register(
+        id="MiniGrid-ColoredBoxPushing-8x8-v0",
+        entry_point="minigrid.envs:BoxPushingEnv",
+        kwargs={"size": 8, "colored": True},
+    )
+
+    register(
+        id="MiniGrid-ColoredBoxPushing-12x12-v0",
+        entry_point="minigrid.envs:BoxPushingEnv",
+        kwargs={"size": 12, "colored": True},
+    )
+
+    register(
+        id="MiniGrid-ColoredBoxPushing-16x16-v0",
+        entry_point="minigrid.envs:BoxPushingEnv",
+        kwargs={"size": 16, "colored": True},
+    )
+
     # Fetch
     # ----------------------------------------
 

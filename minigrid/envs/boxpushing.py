@@ -14,6 +14,9 @@ class BoxPushingEnv(MiniGridEnv):
     This environment is an empty room, and the goal of the agent is to push 
     the box to reach every goal square, which provides a sparse reward. 
     A small penalty is subtracted for the number of steps to reach every goal.
+    And there will be a large bonus once all boxes reach their goal squares.
+    If the game used colored goals, then different colored boxes must reach the same colored goal,
+    making it much harder to solve.
 
     ### Mission Space
 
@@ -52,8 +55,12 @@ class BoxPushingEnv(MiniGridEnv):
 
     ### Registered Configurations
 
+    - `MiniGrid-BoxPushing-8x8-v0`
     - `MiniGrid-BoxPushing-12x12-v0`
     - `MiniGrid-BoxPushing-16x16-v0`
+    - `MiniGrid-ColoredBoxPushing-8x8-v0`
+    - `MiniGrid-ColoredBoxPushing-12x12-v0`
+    - `MiniGrid-ColoredBoxPushing-16x16-v0`
 
     """
 
@@ -64,10 +71,15 @@ class BoxPushingEnv(MiniGridEnv):
         agent_start_dir=0,
         max_steps: Optional[int] = None,
         required_boxes_num=4, 
+        colored=False,
         **kwargs
     ):
         self.agent_start_pos = agent_start_pos # Not used
         self.agent_start_dir = agent_start_dir
+        self.colored = colored
+        self.color_box = ["green"] * 4
+        if self.colored:
+            self.color_box = ["yellow", "green", "blue", "red"]
 
         self.required_boxes_num = required_boxes_num
         self.success_boxes_num = 0
@@ -118,20 +130,20 @@ class BoxPushingEnv(MiniGridEnv):
         self.grid.wall_rect(0, 0, width, height)
 
         # Place a goal square in four corners
-        self.put_obj(ColoredGoal("yellow"), width - 2, height - 2)
-        self.put_obj(ColoredGoal("green"), 1, 1)
-        self.put_obj(ColoredGoal("blue"), width - 2, 1)
-        self.put_obj(ColoredGoal("red"), 1, height - 2)
+        self.put_obj(ColoredGoal(self.color_box[0]), width - 2, height - 2)
+        self.put_obj(ColoredGoal(self.color_box[1]), 1, 1)
+        self.put_obj(ColoredGoal(self.color_box[2]), width - 2, 1)
+        self.put_obj(ColoredGoal(self.color_box[3]), 1, height - 2)
 
         box_pos_idx = np.random.choice((width - 4)*(height - 4), 4, replace=False)
         box_pos = []
         for i in range(4):
             box_pos.append([box_pos_idx[i] // (width - 4) + 2, box_pos_idx[i] % (width - 4) + 2])
 
-        self.put_obj(Box("yellow"), box_pos[0][0], box_pos[0][1])
-        self.put_obj(Box("green"), box_pos[1][0], box_pos[1][1])
-        self.put_obj(Box("blue"), box_pos[2][0], box_pos[2][1])
-        self.put_obj(Box("red"), box_pos[3][0], box_pos[3][1])
+        self.put_obj(Box(self.color_box[0]), box_pos[0][0], box_pos[0][1])
+        self.put_obj(Box(self.color_box[1]), box_pos[1][0], box_pos[1][1])
+        self.put_obj(Box(self.color_box[2]), box_pos[2][0], box_pos[2][1])
+        self.put_obj(Box(self.color_box[3]), box_pos[3][0], box_pos[3][1])
 
         # Place the agent
         self.place_agent()
