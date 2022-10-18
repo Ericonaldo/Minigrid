@@ -192,6 +192,9 @@ or to fine-tune difficulty.
 This environment is an empty room, and the goal of the agent is to push 
 the box to reach every goal square, which provides a sparse reward. 
 A small penalty is subtracted for the number of steps to reach every goal.
+And there will be a large bonus once all boxes reach their goal squares.
+If the game used colored goals, then different colored boxes must reach the same colored goal,
+making it much harder to solve.
 
 <p align="center">
     <img src="figures/boxpushing-env.png" width=250 alt="Figure of the empty environment">
