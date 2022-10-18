@@ -12,12 +12,12 @@ class BoxPushingEnv(MiniGridEnv):
     ### Description
 
     This environment is an empty room, and the goal of the agent is to push 
-    the box to reach the green goal square, which provides a sparse reward. 
+    the box to reach every goal square, which provides a sparse reward. 
     A small penalty is subtracted for the number of steps to reach every goal.
 
     ### Mission Space
 
-    "get to the green goal square"
+    "push the box(es) to every goal square"
 
     ### Action Space
 
@@ -119,7 +119,7 @@ class BoxPushingEnv(MiniGridEnv):
         else:
             self.place_agent()
 
-        self.mission = "push the box(es) to the goal square" 
+        self.mission = "push the box(es) to every goal square" 
 
     def reset(self, *args, **kwargs):
         self.success_boxes_num = 0
