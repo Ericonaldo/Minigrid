@@ -190,7 +190,7 @@ or to fine-tune difficulty.
 ### BoxPushing environment
 
 This environment is an empty room, and the goal of the agent is to push 
-the box to reach the green goal square, which provides a sparse reward. 
+the box to reach every goal square, which provides a sparse reward. 
 A small penalty is subtracted for the number of steps to reach every goal.
 
 <p align="center">
